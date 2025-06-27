@@ -39,7 +39,7 @@ jobs:
         run: |
           call "C:\MyVS\VC\Auxiliary\Build\vcvars64.bat" && ^
           cd BFN_PreEAAC_Patch\Patch && ^
-          cl /LD dllmain.cpp /link /OUT:RtWorkQ.dll /IMPLIB:RtWorkQ.lib /LIBPATH:libs MinHook.x64.lib
+          cl /LD dllmain.cpp /link /OUT:RtWorkQ.dll /IMPLIB:RtWorkQ.lib /LIBPATH:libs
 
       - name: Upload Compiled DLL
         uses: actions/upload-artifact@v4
