@@ -1,0 +1,48 @@
+name: Build 🤖
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Visual Studio Build Tools
+        shell: pwsh
+        run: |
+          $vsInstallerUrl = "https://aka.ms/vs/17/release/vs_BuildTools.exe"
+          $vsInstallerPath = "$env:RUNNER_TEMP\vs_BuildTools.exe"
+          $installDir = "C:\MyVS"
+
+          Invoke-WebRequest $vsInstallerUrl -OutFile $vsInstallerPath
+
+          Start-Process -Wait -FilePath $vsInstallerPath -ArgumentList `
+            "--installPath `"$installDir`"", `
+            "--add Microsoft.VisualStudio.Workload.VCTools", `
+            "--includeRecommended", `
+            "--passive", "--norestart", "--wait"
+
+      - name: Setup MSVC Environment
+        shell: cmd
+        run: |
+          call "C:\MyVS\VC\Auxiliary\Build\vcvars64.bat"
+
+      - name: Clone Repository
+        run: git clone https://github.com/Twig6943/BFN_PreEAAC_Patch.git
+
+      - name: Build Client
+        shell: cmd
+        run: |
+          call "C:\MyVS\VC\Auxiliary\Build\vcvars64.bat" && ^
+          cd BFN_PreEAAC_Patch && ^
+          cl /LD dllmain.cpp /link /OUT:dinput8.dll /IMPLIB:dinput8.lib /LIBPATH:libs MinHook.x64.lib
+
+      - name: Upload Compiled DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: dll
+          path: BFN_PreEAAC_Patch/dinput8.dll
