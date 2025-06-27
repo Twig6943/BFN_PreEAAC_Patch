@@ -38,11 +38,11 @@ jobs:
         shell: cmd
         run: |
           call "C:\MyVS\VC\Auxiliary\Build\vcvars64.bat" && ^
-          cd BFN_PreEAAC_Patch && ^
-          cl /LD dllmain.cpp /link /OUT:dinput8.dll /IMPLIB:dinput8.lib /LIBPATH:libs MinHook.x64.lib
+          cd BFN_PreEAAC_Patch\Patch && ^
+          cl /LD dllmain.cpp /link /OUT:RtWorkQ.dll /IMPLIB:RtWorkQ.lib /LIBPATH:libs MinHook.x64.lib
 
       - name: Upload Compiled DLL
         uses: actions/upload-artifact@v4
         with:
-          name: dll
-          path: BFN_PreEAAC_Patch/dinput8.dll
+          name: DLL
+          path: BFN_PreEAAC_Patch/Patch/RtWorkQ.dll
